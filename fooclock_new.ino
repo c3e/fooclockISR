@@ -32,10 +32,15 @@ void setup(){
 	intervalpos		= timestamp % 70;
 	phase_end		= millis();
 	setup_done		= true;
+
 };
 
 void loop(){
-	
+	messageBuffer = init_udp_socket();
+	animation_active = true;
+	frame[0] = letters[messageBuffer[0]];
+	delay(5000);
+	animation_active = false;
 }
 
 void updateDisplay(){

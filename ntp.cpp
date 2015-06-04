@@ -16,6 +16,7 @@ const int timeZone = 2;     // Central European Time (summertime)
 
 
 EthernetUDP Udp;
+EthernetUDP u;
 unsigned int localPort		= 8888;  // local port to listen for UDP packets
 
 
@@ -23,14 +24,23 @@ unsigned int localPort		= 8888;  // local port to listen for UDP packets
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 
-
 void setupNTP(){
 	Udp.begin(localPort);
 	setSyncProvider(getNtpTime);
 }
 
-void init_udp_socket(){
-
+byte init_udp_socket(){
+	byte messageBuffer[10];
+	u.begin(1337);
+	//uint32_t beginWait = millis();
+	while (true) {
+		int size = u.parsePacket();
+		if ( size >0){
+			Serial.println("Started listening");
+			Udp.read(messageBuffer,10);
+			return messageBuffer;
+		}
+	}
 }
 
 time_t getNtpTime()

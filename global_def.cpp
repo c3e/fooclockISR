@@ -8,6 +8,9 @@ int update_counter_max = 1000000 / TIMERINTERVAL;
 
 extern unsigned long phase_end = 0;
 
+bool messageReceived = false;
+byte messageBuffer[10];
+
 byte mac[] = {
 	0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
