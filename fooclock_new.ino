@@ -52,11 +52,9 @@ void updateDisplay(){
 	// ----- Check if device is "booting" ----
 	if (!setup_done){
 		//dots(5);
-		//spin(5,10);
+		spin(5,10);
 	}
-	dots(5);
 	// ----- All done, display time, date, binary time and so on ----
-	/*
 	else{
 
 		if(intervalpos < 10){
@@ -68,7 +66,7 @@ void updateDisplay(){
 			updateDate(timestamp);
 
 			if(millis() <= animation_end){
-				combine(buffer);
+			//	combine(buffer);
 			}
 		}
 		else if ( intervalpos > 10 && intervalpos < 20){
@@ -81,7 +79,7 @@ void updateDisplay(){
 			
 			updateTime(timestamp);
 			if(millis() <= animation_end){
-				combine(buffer);
+			//	combine(buffer);
 			}
 		}
 		else if ( intervalpos > 20 && intervalpos < 30){
@@ -93,14 +91,17 @@ void updateDisplay(){
 			}
 			updateBinaryTime(timestamp);
 			if(millis() <= animation_end){
-				combine(buffer);
+			//	combine(buffer);
 			}
+		}
+		else if ( intervalpos > 40 && intervalpos < 50){
+
 		}
 		else{
 			updateTime(timestamp);
 		}
 	}
-	*/
+	
 	// ---- Copy Frame Buffer into Display Buffer unless an animation is active ---
 	if(!animation_active){
 		flush();

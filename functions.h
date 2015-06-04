@@ -14,9 +14,11 @@ void updateDate			(time_t t);
 void updateTime			(time_t t);
 void updateBinaryTime	(time_t t);
 
+
 void flush();
 
-void combine(int* new_data); 
+void combine			(int* new_data); 
+void writeChaospott		();
 
 void spin(int digit, int speed);
 void dots(int speed);

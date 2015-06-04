@@ -45,7 +45,7 @@ void updateBinaryTime(time_t t)
 {
 	int digit;
 
-	for(int digitCount=5; digitCount>=0; digitCount--)
+	for(int digitCount = 0; digitCount < 6; digitCount++)
 	{
 		//digit zusammenbauen
 		digit = 0;
@@ -54,7 +54,7 @@ void updateBinaryTime(time_t t)
 		digit |= ((minute(t) & (1 << digitCount))>>digitCount)<<4;
 		digit |= ((second(t) & (1 << digitCount))>>digitCount)<<6;
 
-		buffer[digitCount]= digit;
+		buffer[5-digitCount]= digit;
 	}
 }
 
@@ -182,4 +182,9 @@ void combine(int* new_data){
 	//Serial.println(animation_active?("----->Animation_active:"):(""));
 	
 	
+}
+
+void writeChaospott	()
+{
+
 }

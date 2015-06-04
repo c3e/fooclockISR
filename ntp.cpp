@@ -29,6 +29,10 @@ void setupNTP(){
 	setSyncProvider(getNtpTime);
 }
 
+void init_udp_socket(){
+
+}
+
 time_t getNtpTime()
 {
 	while (Udp.parsePacket() > 0) ; // discard any previously received packets
