@@ -8,10 +8,12 @@
 #include <Time.h>
 
 extern IPAddress timeServer;
-extern const int timeZone;     
+extern const int timeZone;
+extern byte messageBuffer[200];
 
 void	setupNTP();
 time_t	getNtpTime();
 void	sendNTPpacket(IPAddress &address);
+int	init_udp_socket();
 
 #endif

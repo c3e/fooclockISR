@@ -24,23 +24,41 @@ unsigned int localPort		= 8888;  // local port to listen for UDP packets
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 
+byte messageBuffer[200];
+
+
 void setupNTP(){
 	Udp.begin(localPort);
 	setSyncProvider(getNtpTime);
 }
 
-byte init_udp_socket(){
-	byte messageBuffer[10];
-	u.begin(1337);
+int init_udp_socket(){
+	byte tmp[200];
+	//byte * p;
+	//int ret = 0;
+	//p = messageBuffer;
+	u.begin(2343);
 	//uint32_t beginWait = millis();
 	while (true) {
-		int size = u.parsePacket();
-		if ( size >0){
-			Serial.println("Started listening");
-			Udp.read(messageBuffer,10);
-			return messageBuffer;
-		}
+		u.parsePacket();
+		
+		int size = u.read(tmp,199);
+		
+		if (size <= 0) continue;
+		Serial.println("Parsing Packet ...");
+	//	u.remoteIP().printTo(Serial);
+		tmp[size] = 0;
+		memcpy(messageBuffer,tmp,200);
+	//	Serial.println((char*)tmp);
+	//	return 1;
+		//memcpy(p, tmp, size);
+		Serial.println(size);
+		//p += size;
+		//ret += size;
+		//return messageBuffer;
+		return size;
 	}
+	return 0;
 }
 
 time_t getNtpTime()

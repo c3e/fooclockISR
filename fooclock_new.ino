@@ -15,7 +15,7 @@ void setup(){
 	pinMode (clockPin,     OUTPUT);
 	pinMode (dataPin,      OUTPUT);
 
-	analogWrite(OutputEnable,light_lvl_standard);
+	analogWrite(OutputEnable,255-light_lvl_standard);
 
 	Timer1.initialize(TIMERINTERVAL);		// initialize timer1, and set a 10 milli second period
 	Timer1.attachInterrupt(updateDisplay);  // attaches callback() as a timer overflow interrupt
@@ -31,16 +31,30 @@ void setup(){
 	timestamp		= now();
 	intervalpos		= timestamp % 70;
 	phase_end		= millis();
+
+	Serial.print("My IP-Adress is: ");
+	Serial.println(Ethernet.localIP());
 	setup_done		= true;
 
 };
 
 void loop(){
-	messageBuffer = init_udp_socket();
+	int len = init_udp_socket();
 	animation_active = true;
-	frame[0] = letters[messageBuffer[0]];
-	delay(5000);
+	Serial.print("Message Buffer: ");
+	Serial.println(messageBuffer[0]);
+	
+#if 1
+	for(int i = 0; i < len - 1 ; i ++){
+		shift_right(ascii_table[messageBuffer[i]]);
+		delay(250);
+	}
+	
+	delay(2500);
 	animation_active = false;
+	memset(messageBuffer,0,200);
+#endif
+
 }
 
 void updateDisplay(){
@@ -63,44 +77,22 @@ void updateDisplay(){
 	else{
 
 		if(intervalpos < 10){
-			if( millis() > phase_end && intervalpos < 5){
-				Serial.println("Interval 1, Animation start.");
-				phase_end		= millis() + 10000;
-				animation_end	= millis() + 1000;
-			}
+			
 			updateDate(timestamp);
 
-			if(millis() <= animation_end){
-			//	combine(buffer);
-			}
 		}
 		else if ( intervalpos > 10 && intervalpos < 20){
 			
-			if(millis() > phase_end && intervalpos < 15){
-				Serial.println("Interval 2, Animation start.");
-				phase_end		= millis() + 10000;
-				animation_end	= millis() + 1000;
-			}
-			
 			updateTime(timestamp);
-			if(millis() <= animation_end){
-			//	combine(buffer);
-			}
+			
 		}
 		else if ( intervalpos > 20 && intervalpos < 30){
 			
-			if(millis() > phase_end && intervalpos < 25){
-				Serial.println("Interval 3, Animation start.");
-				phase_end		= millis() + 10000;
-				animation_end	= millis() + 1000;
-			}
 			updateBinaryTime(timestamp);
-			if(millis() <= animation_end){
-			//	combine(buffer);
-			}
+			
 		}
 		else if ( intervalpos > 40 && intervalpos < 50){
-
+			updateDate(timestamp);
 		}
 		else{
 			updateTime(timestamp);
@@ -114,4 +106,7 @@ void updateDisplay(){
 
 	// ---- Shiftout the contents of the Display Buffer -- Don't forget this or you won't see anything!
 	updateRegisters();
+
+	tune_brightness(timestamp);
+
 };

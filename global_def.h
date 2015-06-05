@@ -33,13 +33,15 @@
 #define UP		1
 #define DOWN	2
 
-#define light_lvl_standard	0
+#define light_lvl_standard	60
 #define light_lvl_risen		255
 
 // Timerinterval in microseconds (1 000 000 us = 1s)
 #define TIMERINTERVAL 10000
 
 // ---------------------------------- Definition of Global Variables -------------------------- //
+
+extern int predefined_light_lvls [24];
 
 extern bool setup_done;
 
@@ -68,6 +70,7 @@ extern int dataPin;
 extern int digits[10];
 
 extern const int letter [26]; 
+extern const int ascii_table [130];
 
 extern int frame [6];
 

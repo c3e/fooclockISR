@@ -18,10 +18,13 @@ void updateBinaryTime	(time_t t);
 void flush();
 
 void combine			(int* new_data); 
+void shift_right		(int new_digit);
 void writeChaospott		();
 
 void spin(int digit, int speed);
 void dots(int speed);
 void updateRegisters();
+
+void tune_brightness(time_t timestamp);
 
 #endif

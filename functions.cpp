@@ -112,6 +112,12 @@ void flush()
 
 // --------------------------------------- Animations --------------------------------------- //
 
+void shift_right (int new_digit){
+	for (int i= 5; i >= 1; i--){
+		frame[i] = frame [i-1];
+	}
+	frame[0] = new_digit;
+}
 
 void combine(int* new_data){
 	
@@ -184,7 +190,10 @@ void combine(int* new_data){
 	
 }
 
-void writeChaospott	()
+void tune_brightness(time_t timestamp)
 {
+	int light_lvl = predefined_light_lvls[(hour(timestamp))];
+	
+	analogWrite(OutputEnable, 255 - light_lvl);
 
 }
