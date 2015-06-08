@@ -9,7 +9,7 @@
 
 extern IPAddress timeServer;
 extern const int timeZone;
-extern byte messageBuffer[200];
+extern byte messageBuffer[206];
 
 void	setupNTP();
 time_t	getNtpTime();

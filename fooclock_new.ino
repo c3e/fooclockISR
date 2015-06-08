@@ -20,6 +20,8 @@ void setup(){
 	Timer1.initialize(TIMERINTERVAL);		// initialize timer1, and set a 10 milli second period
 	Timer1.attachInterrupt(updateDisplay);  // attaches callback() as a timer overflow interrupt
 
+	memset(messageBuffer,0,206);
+
 	Serial.begin(9600);
 
 	while (Ethernet.begin(mac) == 0) {
@@ -44,16 +46,16 @@ void loop(){
 	Serial.print("Message Buffer: ");
 	Serial.println(messageBuffer[0]);
 	
-#if 1
-	for(int i = 0; i < len - 1 ; i ++){
+	clear_frame();
+
+	for(int i = 0; i < len + 5 ; i ++){
 		shift_right(ascii_table[messageBuffer[i]]);
-		delay(250);
+		delay(500);
 	}
 	
-	delay(2500);
 	animation_active = false;
-	memset(messageBuffer,0,200);
-#endif
+	memset(messageBuffer,0,206);
+
 
 }
 
@@ -70,8 +72,8 @@ void updateDisplay(){
 	}
 	// ----- Check if device is "booting" ----
 	if (!setup_done){
-		//dots(5);
-		spin(5,10);
+		dots(5);
+		//spin(5,10);
 	}
 	// ----- All done, display time, date, binary time and so on ----
 	else{

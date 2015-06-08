@@ -64,11 +64,11 @@ void spin(int digit, int speed)
 	if(update_counter % speed == 0){
 	if(spinner_pos >= 6)spinner_pos = 0;
 	switch (spinner_pos){
-		case  0: buffer[digit] =   4+1; break;
+		case  0: buffer[digit] =   4; break;
 		case  1: buffer[digit] =   2; break;
-		case  2: buffer[digit] =  32+1; break;
+		case  2: buffer[digit] =  32; break;
 		case  3: buffer[digit] =  64; break;
-		case  4: buffer[digit] = 128+1; break;
+		case  4: buffer[digit] = 128; break;
 		case  5: buffer[digit] =   8; break;
 		default: buffer[digit] =   0; break;
 	}
@@ -81,10 +81,10 @@ void dots(int speed)
 	if(update_counter % speed == 0){
 		if(dot_pos >= 6){
 			dot_pos = 0;
-			buffer[5] = 0;
+			buffer[5] &= ~(0x01);
 		}
-		buffer[dot_pos] = 1;
-		if(dot_pos > 0) buffer[dot_pos -1] = 0;
+		buffer[dot_pos] |= 1;
+		if(dot_pos > 0) buffer[dot_pos -1] &= ~(0x01);
 		dot_pos++;
 	}
 }
@@ -107,6 +107,13 @@ void flush()
 {
 	for (int i = 0; i < 6; i++){
 		frame[5-i] = buffer[i];
+	}
+}
+
+void clear_frame()
+{
+	for (int i = 0; i < 6; i++){
+		frame[i] = 0;
 	}
 }
 

@@ -17,6 +17,8 @@ void updateBinaryTime	(time_t t);
 
 void flush();
 
+void clear_frame();
+
 void combine			(int* new_data); 
 void shift_right		(int new_digit);
 void writeChaospott		();
