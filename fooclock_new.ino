@@ -20,6 +20,7 @@ void setup(){
 	Timer1.initialize(TIMERINTERVAL);		// initialize timer1, and set a 10 milli second period
 	Timer1.attachInterrupt(updateDisplay);  // attaches callback() as a timer overflow interrupt
 
+
 	memset(messageBuffer,0,206);
 
 	Serial.begin(9600);
@@ -36,27 +37,32 @@ void setup(){
 
 	Serial.print("My IP-Adress is: ");
 	Serial.println(Ethernet.localIP());
+
 	setup_done		= true;
 
 };
 
 void loop(){
-	int len = init_udp_socket();
-	animation_active = true;
-	Serial.print("Message Buffer: ");
-	Serial.println(messageBuffer[0]);
-	
-	clear_frame();
-
-	for(int i = 0; i < len + 5 ; i ++){
-		shift_right(ascii_table[messageBuffer[i]]);
-		delay(500);
+	//int len = init_udp_socket();
+	int len = 0;
+	if(!ntp_update_active){
+		len = listenForMessages();
 	}
 	
-	animation_active = false;
-	memset(messageBuffer,0,206);
+	if(len > 0){
+		animation_active = true;
+		
+		clear_frame();
 
+		for(int i = 0; i < len + 5 ; i ++){
+			shift_right(ascii_table[messageBuffer[i]]);
+			delay(500);
+		}
 
+		animation_active = false;
+		memset(messageBuffer,0,206);
+	}
+	
 }
 
 void updateDisplay(){

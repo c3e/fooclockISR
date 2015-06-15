@@ -7,13 +7,16 @@
 #include <SPI.h>
 #include <Time.h>
 
-extern IPAddress timeServer;
-extern const int timeZone;
-extern byte messageBuffer[206];
+extern IPAddress	timeServer;
+extern const int	timeZone;
+extern byte			messageBuffer[206];
+extern boolean		ntp_update_active;
 
-void	setupNTP();
-time_t	getNtpTime();
-void	sendNTPpacket(IPAddress &address);
-int	init_udp_socket();
+void	setupNTP			();
+time_t	getNtpTime			();
+void	sendNTPpacket		(IPAddress &address);
+
+
+int		listenForMessages	();
 
 #endif

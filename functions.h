@@ -23,10 +23,10 @@ void combine			(int* new_data);
 void shift_right		(int new_digit);
 void writeChaospott		();
 
-void spin(int digit, int speed);
-void dots(int speed);
-void updateRegisters();
+void spin				(int digit, int speed);
+void dots				(int speed);
+void updateRegisters	();
 
-void tune_brightness(time_t timestamp);
+void tune_brightness	(time_t timestamp);
 
 #endif

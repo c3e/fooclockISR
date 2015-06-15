@@ -157,7 +157,7 @@ const int ascii_table [130] = {
 	0x01,	// <
 	0x01,	// =
 	0x01,	// >
-	0x01,	// ?
+	0x97,	// ?
 	0x01,	// @
 	0xbe,	// A  
 	0xf8,	// b
@@ -183,7 +183,7 @@ const int ascii_table [130] = {
 	0xe0,	// v  
 	0x1a,	// w  
 	0xba,	// X 
-	0x3a,	// y 
+	0x7a,	// y 
 	0xd6,	// Z
 	0xcc,	// [
 	0x38,	// backslash
@@ -215,7 +215,7 @@ const int ascii_table [130] = {
 	0xe0,	// v  
 	0x1a,	// w  
 	0xba,	// X 
-	0x3a,	// y 
+	0x7a,	// y 
 	0xd6,	// Z
 	0,
 	0,

@@ -16,54 +16,76 @@ const int timeZone = 2;     // Central European Time (summertime)
 
 
 EthernetUDP Udp;
-EthernetUDP message_socket;
+
 unsigned int localPort		= 8888;  // local port to listen for UDP packets
 
 
 
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
+boolean ntp_packet_received = false;
+boolean ntp_update_active	= false;
 
+
+EthernetUDP message_socket;
 byte messageBuffer[206];
 
+EthernetServer server(2342);
 
-void setupNTP(){
+
+void setupNTP()
+{
 	Udp.begin(localPort);
 	setSyncProvider(getNtpTime);
 }
 
-int init_udp_socket(){
-	byte tmp[200];
-	memset(tmp,0,200);
-	//byte * p;
-	//int ret = 0;
-	//p = messageBuffer;
-	message_socket.begin(2343);
-	//uint32_t beginWait = millis();
-	while (true) {
-		message_socket.parsePacket();
-		
-		int size = message_socket.read(tmp,199);
-		
-		if (size <= 0) continue;
-		Serial.println("Parsing Packet ...");
-	//	u.remoteIP().printTo(Serial);
-		tmp[size] = 0;
-		memcpy(messageBuffer,tmp,200);
-	//	Serial.println((char*)tmp);
-	//	return 1;
-		//memcpy(p, tmp, size);
-		Serial.println(size);
-		//p += size;
-		//ret += size;
-		//return messageBuffer;
-		return size;
+int listenForMessages()
+{
+	if(ntp_packet_received){
+		server.begin();
+		ntp_packet_received = false;
 	}
-	return 0;
+	//byte tempBuffer[200];
+	//memset(tempBuffer,0,200);
+	int messageCharCounter = 0;
+
+	EthernetClient client = server.available();
+	if (client){
+		Serial.println("New client.");
+		while (client.connected())
+		{
+			if(client.available()){
+				char c = client.read();
+				Serial.write(c);
+				messageBuffer[messageCharCounter] = c;
+				messageCharCounter ++;
+				if (c == '\n')
+				{
+					break;
+				}
+				if(messageCharCounter >= 201){
+					client.println("\n Message too long! Will only print the first 200 characters.");
+					break;
+				}
+				
+			}
+		}
+
+		messageBuffer[messageCharCounter] = 0;
+		Serial.print("Message length: ");
+		Serial.println(messageCharCounter-1);
+		//memcpy(tempBuffer,messageBuffer,200);
+		client.println("\n Writing your message to the Board. \n Please be patient ...");
+		delay(10);
+		client.stop();
+	}
+	
+	return messageCharCounter;
 }
 
 time_t getNtpTime()
 {
+	ntp_update_active = true;
 	while (Udp.parsePacket() > 0) ; // discard any previously received packets
 	//Serial.println("Transmit NTP Request");
 	sendNTPpacket(timeServer);
@@ -79,10 +101,16 @@ time_t getNtpTime()
 			secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
 			secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
 			secsSince1900 |= (unsigned long)packetBuffer[43];
+
+			ntp_update_active = false;
+			ntp_packet_received = true;
+
 			return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
+			
 		}
 	}
 	//Serial.println("No NTP Response :-(");
+	
 	return 0; // return 0 if unable to get the time
 }
 
@@ -93,7 +121,7 @@ void sendNTPpacket(IPAddress &address)
 	memset(packetBuffer, 0, NTP_PACKET_SIZE);
 	// Initialize values needed to form NTP request
 	// (see URL above for details on the packets)
-	packetBuffer[0]   = 0b11100011;   // LI, Version, Mode
+	packetBuffer[0]   = 0xE3;   // LI, Version, Mode
 	packetBuffer[1]   = 0;     // Stratum, or type of clock
 	packetBuffer[2]   = 6;     // Polling Interval
 	packetBuffer[3]   = 0xEC;  // Peer Clock Precision
