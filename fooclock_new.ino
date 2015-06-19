@@ -8,6 +8,7 @@
 #include "global_def.h"
 #include "ntp.h"
 
+//#define DEBUG
 
 void setup(){
 	pinMode (OutputEnable, OUTPUT);
@@ -23,7 +24,9 @@ void setup(){
 
 	memset(messageBuffer,0,206);
 
-	Serial.begin(9600);
+#ifdef DEBUG
+	Serial.begin(115200);
+#endif
 
 	while (Ethernet.begin(mac) == 0) {
 		delay(5000);						// Wait for a valid IP-Address				
@@ -35,9 +38,10 @@ void setup(){
 	intervalpos		= timestamp % 70;
 	phase_end		= millis();
 
+#ifdef DEBUG
 	Serial.print("My IP-Adress is: ");
 	Serial.println(Ethernet.localIP());
-
+#endif
 	setup_done		= true;
 
 };
@@ -61,8 +65,16 @@ void loop(){
 
 		animation_active = false;
 		memset(messageBuffer,0,206);
+
 	}
-	
+#ifdef DEBUG
+	if(animation_active == true){
+		Serial.println("!!! ------------------------ !!!");
+		Serial.println("!!!   Something went Wrong   !!!");
+		Serial.println("!!! animation_active is true !!!");
+		Serial.println("!!! ------------------------ !!!");
+	}
+#endif
 }
 
 void updateDisplay(){

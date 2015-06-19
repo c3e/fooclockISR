@@ -36,6 +36,7 @@ EthernetServer server(2342);
 void setupNTP()
 {
 	Udp.begin(localPort);
+	setSyncInterval(3600);
 	setSyncProvider(getNtpTime);
 }
 
@@ -45,18 +46,21 @@ int listenForMessages()
 		server.begin();
 		ntp_packet_received = false;
 	}
-	//byte tempBuffer[200];
-	//memset(tempBuffer,0,200);
+
 	int messageCharCounter = 0;
 
 	EthernetClient client = server.available();
 	if (client){
+#ifdef DEBUG
 		Serial.println("New client.");
+#endif
 		while (client.connected())
 		{
 			if(client.available()){
 				char c = client.read();
+#ifdef DEBUG
 				Serial.write(c);
+#endif
 				messageBuffer[messageCharCounter] = c;
 				messageCharCounter ++;
 				if (c == '\n')
@@ -64,6 +68,7 @@ int listenForMessages()
 					break;
 				}
 				if(messageCharCounter >= 201){
+					messageCharCounter = 200;
 					client.println("\n Message too long! Will only print the first 200 characters.");
 					break;
 				}
@@ -72,9 +77,10 @@ int listenForMessages()
 		}
 
 		messageBuffer[messageCharCounter] = 0;
+#ifdef DEBUG
 		Serial.print("Message length: ");
 		Serial.println(messageCharCounter-1);
-		//memcpy(tempBuffer,messageBuffer,200);
+#endif
 		client.println("\n Writing your message to the Board. \n Please be patient ...");
 		delay(10);
 		client.stop();
@@ -93,7 +99,9 @@ time_t getNtpTime()
 	while (millis() - beginWait < 1500) {
 		int size = Udp.parsePacket();
 		if (size >= NTP_PACKET_SIZE) {
+#ifdef DEBUG
 			Serial.println("Receive NTP Response");
+#endif
 			Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read packet into the buffer
 			unsigned long secsSince1900;
 			// convert four bytes starting at location 40 to a long integer
@@ -110,7 +118,7 @@ time_t getNtpTime()
 		}
 	}
 	//Serial.println("No NTP Response :-(");
-	
+	ntp_packet_received = true;
 	return 0; // return 0 if unable to get the time
 }
 
