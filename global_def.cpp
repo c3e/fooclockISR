@@ -227,7 +227,7 @@ const int ascii_table [130] = {
 };
 
 int buffer [6] = {
-	letter[S],letter[T],letter[A],letter[R],letter[T],0 
+	letter[LETTER_S],letter[LETTER_T],letter[LETTER_A],letter[LETTER_R],letter[LETTER_T],0 
 };
 
 int frame [6] = {
